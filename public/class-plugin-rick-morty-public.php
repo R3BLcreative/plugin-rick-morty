@@ -47,11 +47,10 @@ class Plugin_Rick_Morty_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -73,8 +72,7 @@ class Plugin_Rick_Morty_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/plugin-rick-morty-public.css', array(), $this->version, 'all' );
-
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/plugin-rick-morty-public.css', array(), filemtime(plugin_dir_path(dirname(__FILE__)) . 'public/css/plugin-rick-morty-public.css'), 'all');
 	}
 
 	/**
@@ -96,8 +94,6 @@ class Plugin_Rick_Morty_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/plugin-rick-morty-public.js', array( 'jquery' ), $this->version, false );
-
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/plugin-rick-morty-public.js', array('jquery'), filemtime(plugin_dir_path(dirname(__FILE__)) . 'public/js/plugin-rick-morty-public.js'), false);
 	}
-
 }

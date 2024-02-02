@@ -1,7 +1,19 @@
 {
-  "dependencies": {
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.33",
-    "tailwindcss": "^3.4.1"
-  }
+	"dependencies": {
+		"autoprefixer": "^10.4.17",
+		"postcss": "^8.4.33",
+		"tailwindcss": "^3.4.1",
+		"uglify-js": "^3.17.4",
+		"uglifyjs-folder": "^3.3.0",
+		"watch": "^0.13.0",
+		"clean-css": "^5.3.3"
+	},
+	"scripts": {
+		"build": "npm-run-all --sequential jsbuild twbuild",
+		"dev": "npm-run-all --parallel jsdev twdev",
+		"jsbuild": "uglifyjs-folder ./public/src/js/ -o ./public/js/ -e -x .js",
+		"jsdev": "watch 'npm run jsbuild' ./public/src/js/",
+		"twbuild": "tailwindcss -i ./public/src/css/plugin-rick-morty-public.css -o ./public/css/plugin-rick-morty-public.css --postcss --minify",
+		"twdev": "tailwindcss -i ./public/src/css/plugin-rick-morty-public.css -o ./public/css/plugin-rick-morty-public.css --watch --postcss"
+	}
 }
