@@ -1,8 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	prefix: 'tw-',
-	content: ['./admin/**/*.{php,js}'],
+	content: ['./public/**/*.{php,js}'],
 	theme: {
+		screens: {
+			mobile: '0px',
+			tablet: '767px',
+			laptop: '991px',
+			desktop: '1281px',
+		},
 		extend: {},
 	},
 	plugins: [],

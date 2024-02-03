@@ -71,8 +71,9 @@ class Plugin_Rick_Morty_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+		// wp_register_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/plugin-rick-morty-public.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/plugin-rick-morty-public.css'), 'all');
 
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/plugin-rick-morty-public.css', array(), filemtime(plugin_dir_path(dirname(__FILE__)) . 'public/css/plugin-rick-morty-public.css'), 'all');
+		wp_register_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/plugin-rick-morty-public.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/plugin-rick-morty-public.css'), 'all');
 	}
 
 	/**
@@ -94,6 +95,97 @@ class Plugin_Rick_Morty_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/plugin-rick-morty-public.js', array('jquery'), filemtime(plugin_dir_path(dirname(__FILE__)) . 'public/js/plugin-rick-morty-public.js'), false);
+		// wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/plugin-rick-morty-public.js', array(), filemtime(plugin_dir_path(__FILE__) . 'js/plugin-rick-morty-public.js'), false);
+
+		wp_register_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/plugin-rick-morty-public.js', array(), filemtime(plugin_dir_path(__FILE__) . 'js/plugin-rick-morty-public.js'), false);
+	}
+
+	/**
+	 * Register the Shortcodes for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function register_shortcodes() {
+		add_shortcode('rick-n-morty', [$this, 'sc_rick_morty_list']);
+	}
+
+	/**
+	 * Adds custom pagination query vars to WP Query.
+	 *
+	 * @since    1.0.0
+	 */
+	public function add_query_vars($qvars) {
+		$qvars[] = 'rm_pg';
+		return $qvars;
+	}
+
+	/**
+	 * Register the Shortcodes for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function sc_rick_morty_list($atts, $content = null) {
+		global $post;
+
+		wp_enqueue_style('plugin-rick-morty');
+
+		// extract(shortcode_atts([
+		// 	'character'	=> 'default'
+		// ], $atts));
+
+		$response = $this->rick_morty_api();
+		if (is_object($response)) {
+			$characters = $response->data->characters->results;
+			$pages = $response->data->characters->info->pages;
+			$page = get_query_var('rm_pg', '1');
+		} else {
+			$error = $response;
+		}
+
+		ob_start();
+		include(plugin_dir_path(__FILE__) . 'partials/list.php');
+		return ob_get_clean();
+	}
+
+	/**
+	 * Make the API call.
+	 *
+	 * @since    1.0.0
+	 */
+	private function rick_morty_api() {
+		$ep = 'https://rickandmortyapi.com/graphql';
+		$page = get_query_var('rm_pg', '1');
+
+		$query = '
+		query {
+			characters(page: ' . $page . ', filter: {status: "dead"}) {
+				info {
+					pages
+				},
+				results {
+					image,
+					name,
+					status,
+					created
+				}
+			}
+		}
+		';
+
+		$data = ['query' => $query];
+		$data = http_build_query($data);
+		$options = [
+			'http' => [
+				'method' => 'POST',
+				'content' => $data,
+			]
+		];
+
+		$context = stream_context_create($options);
+		$result = @file_get_contents($ep, false, $context);
+
+		$error = ($result === false) ? 'There was an error with the API call' : false;
+
+		return ($error) ? $error : json_decode($result);
 	}
 }
