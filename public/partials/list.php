@@ -28,14 +28,22 @@
 						<?php echo $character->name; ?>
 					</h2>
 
-					<div class="tw-flex tw-flex-nowrap tw-items-start tw-justify-between tw-gap-3">
-						<div class="tw-font-bold !tw-font-sans !tw-text-base !tw-tracking-wide">
-							Status:<br>
-							Created:
+					<div class="tw-flex tw-flex-col tw-flex-nowrap tw-items-start tw-justify-between tw-gap-3">
+						<div class="">
+							<span class="tw-block tw-font-bold !tw-font-sans !tw-text-base !tw-tracking-wide">
+								Status:
+							</span>
+							<span class="tw-block tw-italic !tw-font-mono !tw-text-base">
+								<?php echo $character->status; ?>
+							</span>
 						</div>
-						<div class="tw-italic !tw-font-mono !tw-text-base">
-							<?php echo $character->status; ?><br>
-							<?php echo date('F j, Y', strtotime($character->created)); ?>
+						<div class="">
+							<span class="tw-block tw-font-bold !tw-font-sans !tw-text-base !tw-tracking-wide">
+								Created:
+							</span>
+							<span class="tw-block tw-italic !tw-font-mono !tw-text-base">
+								<?php echo date('F j, Y', strtotime($character->created)); ?>
+							</span>
 						</div>
 					</div>
 				</div>
